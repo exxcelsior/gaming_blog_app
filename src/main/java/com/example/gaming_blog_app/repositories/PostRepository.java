@@ -2,6 +2,7 @@ package com.example.gaming_blog_app.repositories;
 
 import com.example.gaming_blog_app.models.Post;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,10 +16,10 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Optional<Post> findById(int id);
 
-    List<Post> findAllByOrderByCreateDateDesc();
+    Page<Post> findAllByOrderByCreateDateDesc(PageRequest pageRequest);
 
-    List<Post> findAllByCategory_Id(int id);
+    Page<Post> findAllByCategory_IdOrderByCreateDateDesc(PageRequest pageRequest, int id);
 
-    List<Post> findAllByUserId(int id);
+    Page<Post> findAllByUserIdOrderByCreateDateDesc(PageRequest pageRequest, int id);
 
 }

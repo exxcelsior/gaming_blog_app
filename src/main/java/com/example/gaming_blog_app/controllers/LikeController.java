@@ -42,7 +42,7 @@ public class LikeController {
             Post post = optionalPost.get();
 
             if (likeService.existsByPostIdAndUserId(post.getId(), user.getId())) {
-                removeLike(postId, user);
+                likeService.delete(post, user);
             } else {
                 Like like = new Like();
                 like.setUser(user);

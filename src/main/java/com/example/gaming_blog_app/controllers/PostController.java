@@ -7,14 +7,13 @@ import com.example.gaming_blog_app.models.User;
 import com.example.gaming_blog_app.repositories.CategoryRepository;
 import com.example.gaming_blog_app.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -103,12 +102,10 @@ public class PostController {
             Post existingPost = optionalPost.get();
 
             if(isPrincipalOwnerOfPost(principal, existingPost)) {
-                //model.addAttribute("post", post);
-                //postService.save(post);
                 existingPost.setTitle(post.getTitle());
                 existingPost.setContent(post.getContent());
 
-                postService.save(existingPost);
+                postService.update(existingPost);
                 return "redirect:/posts/" + post.getId();
             }
         }
@@ -140,20 +137,19 @@ public class PostController {
     }
 
     @GetMapping("/categories/{id}")
-    public String getAllPostsByCategory(@PathVariable int id, Model model) {
-        List<Post> posts = postService.findAllByCategory(id);
+    public String getAllPostsByCategory(@RequestParam Optional<Integer> page, @PathVariable int id, Model model) {
+        Page<Post> posts = postService.findAllByCategory(PageRequest.of(page.orElse(0),5),id);
 
         Map<Integer, Integer> commentCounts = new HashMap<>();
-
-        for(int i = 0; i < posts.size(); i++) {
-            Integer postId = posts.get(i).getId();
+        for(int i = 0; i < posts.getContent().size(); i++) {
+            Integer postId = posts.getContent().get(i).getId();
             commentCounts.put((postId), commentService.getNumberOfCommentsByPost(postId));
         }
 
         Map<Integer, Integer> likeCounts = new HashMap<>();
 
-        for(int i = 0; i < posts.size(); i++) {
-            Integer postId = posts.get(i).getId();
+        for(int i = 0; i < posts.getContent().size(); i++) {
+            Integer postId = posts.getContent().get(i).getId();
             likeCounts.put((postId), likeService.getNumberOfLikesByPost(postId));
         }
 

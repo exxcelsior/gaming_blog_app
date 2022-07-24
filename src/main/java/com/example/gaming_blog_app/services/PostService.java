@@ -5,12 +5,12 @@ import com.example.gaming_blog_app.repositories.CommentRepository;
 import com.example.gaming_blog_app.repositories.LikeRepository;
 import com.example.gaming_blog_app.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -28,12 +28,17 @@ public class PostService {
         return postRepository.findById(id);
     }
 
-    public List<Post> getAll() {
+    public List<Post> getAll(PageRequest of) {
         return postRepository.findAll();
     }
 
     public Post save(Post post) {
         post.setCreateDate(LocalDateTime.now());
+        return postRepository.save(post);
+    }
+
+    public Post update(Post post) {
+        post.setUpdateDate(LocalDateTime.now());
         return postRepository.save(post);
     }
 
@@ -43,26 +48,15 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public List<Post> findAllByOrderedByCreateDateDesc() {
-        return postRepository.findAllByOrderByCreateDateDesc();
+    public Page<Post> findAllByOrderedByCreateDateDesc(PageRequest pageRequest) {
+        return postRepository.findAllByOrderByCreateDateDesc(pageRequest);
     }
 
-    public List<Post> findAllByCategory(int id) {
-        return postRepository.findAllByCategory_Id(id);
+    public Page<Post> findAllByCategory(PageRequest pageRequest, int id) {
+        return postRepository.findAllByCategory_IdOrderByCreateDateDesc(pageRequest, id);
     }
 
-    public List<Post> findAllByUser(int id) {
-        return postRepository.findAllByUserId(id);
-    }
-
-    public Map<Integer,Integer> mapCommentsCountToPost(List<Post> posts) {
-        List<Post> _posts = findAllByOrderedByCreateDateDesc();
-        Map<Integer, Integer> commentCounts = new HashMap<>();
-
-        for(int i = 0; i < _posts.size(); i++) {
-            Integer postId = _posts.get(i).getId();
-            commentCounts.put((postId), commentRepository.countCommentByPostId(postId));
-        }
-        return commentCounts;
+    public Page<Post> findAllByUser(PageRequest pageRequest, int id) {
+        return postRepository.findAllByUserIdOrderByCreateDateDesc(pageRequest, id);
     }
 }
