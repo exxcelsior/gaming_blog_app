@@ -34,6 +34,10 @@
             </div>
             <hr/>
         </div>
+
+        <div th:replace="/fragments/pagination :: pagination(URLparameter='/')"/>
+
+        <div th:replace="/fragments/footer :: footer"/>
     </div>
 </body>
 </html>

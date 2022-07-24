@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "posts")
@@ -29,7 +28,7 @@ public class Post {
     private LocalDateTime createDate;
 
     @Column(name = "time_updated")
-    private LocalDateTime timeUpdated;
+    private LocalDateTime updateDate;
 
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)

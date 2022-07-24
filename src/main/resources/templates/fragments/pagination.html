@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:fragment="pagination">
+
+    <!-- Pagination -->
+    <div class="pagination" th:with="baseUrl=${#httpServletRequest.requestURI}">
+        <span th:unless="${posts.getNumber() + 1 < 0 || posts.getNumber() + 1 > posts.getTotalElements()}">
+
+            <span th:if="${posts.hasPrevious()}">
+                <a class="pageLink"
+                   th:href="@{${baseUrl}(page=0)}">&laquo; first</a>
+                <a class="pageLink"
+                   th:href="@{${baseUrl}(page=${posts.getNumber() - 1})}"> previous</a>
+            </span>
+
+            <span th:if="${posts.getTotalPages() != 1}"
+                  th:text="'Page ' + ${posts.getNumber() + 1} + ' of ' + ${posts.getTotalPages()} + '.'">
+            </span>
+
+            <span th:if="${posts.hasNext()}">
+                <a class="pageLink"
+                   th:href="@{${baseUrl}(page=${posts.getNumber() + 1})}">next</a>
+                <a class="pageLink"
+                   th:href="@{${baseUrl}(page=${posts.getTotalPages() - 1})}">last &raquo;</a>
+            </span>
+        </span>
+    </div>
+
+</div>
+</body>
+</html>
