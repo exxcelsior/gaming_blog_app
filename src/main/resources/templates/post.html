@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device=width, initial-scale=1">
+    <title th:text="'Gaming blog - ' + ${post.title}">Post</title>
+</head>
+<body>
+<div class="container">
+
+    <div th:replace="/fragments/header :: header"/>
+
+    <div class="posts-container">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title"><a style="text-decoration: none;color: black;font-weight: bold" th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Title</a>
+                </h4>
+                <a style="text-decoration:none" class="card-subtitle mb-2 text-muted" th:href="@{'/blog/' + ${post.user.username}}" th:text="${post.user.username}">Username</a>
+                <h7 class="card-subtitle mb-2 text-muted" style="font-style:italic" th:text="${#temporals.format(post.createDate, 'dd MMMM yy HH:mm', #locale.US)}">Posted time</h7>
+                <br>
+                <br>
+                <p class="card-text" style="" th:text="${post.content}">Post content</p>
+                <a class="card-link" style="text-decoration: none" th:href="@{'/categories/' + ${post.category.id}}" th:text="${post.category.title} + ' | Genre: ' + ${post.category.genre.name}
+                     + ' | Released at ' + ${post.category.releaseDate} + ' | by ' + ${post.category.publisher.title}">Post category</a>
+                <p class="card-text" style=""></p>
+            </div>
+        </div>
+        <ul th:if="${#authentication.getName()} == ${post.user.getUsername()}">
+            <li><a th:href="@{'/posts/' + ${post.id} + '/update'}">Edit post</a></li>
+            <li><a th:href="@{'/posts/' + ${post.id} + '/delete'}">Delete</a></li>
+        </ul>
+
+        <div align="center" class="likes">
+            <a style="text-decoration: none" th:href="@{'/like/' + ${post.id}}" th:text="${likeCount} + ' &#10084'">like button</a>
+        </div>
+    </div>
+
+    <a th:href="@{'/commentPost/' + ${post.id}}">Add Comment</a>
+
+    <div class="comments-container">
+        <p th:object="${commentCount}" th:text="${commentCount} + ' comment(s)'">Comment count</p>
+        <div class="comments" th:each="comment : ${comments}">
+            <p style="float:left; font-weight:bold" th:text="${comment.user.username}">Comment author</p>
+            <p style="font-style: italic"th:text="${#temporals.format(comment.createDate, 'dd MMMM yy HH:mm', #locale.US)}">Posted time</p>
+            <p th:text="${comment.content}">Comment text</p>
+        </div>
+        <br>
+    </div>
+</div>
+</body>
+</html>

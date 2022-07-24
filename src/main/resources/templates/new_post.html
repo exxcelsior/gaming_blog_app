@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device=width, initial-scale=1">
+    <title>Gaming blog - New post</title>
+</head>
+<body>
+<div class="container">
+
+    <div th:replace="/fragments/header :: header"/>
+
+    <form action="#"
+          th:action="@{'/posts/new'}"
+          th:object="${post}"
+          method="POST">
+        <input type="hidden" th:field="*{user}" />
+        <input type="hidden" th:field="*{createDate}" />
+
+        <h2>New post</h2>
+        <div>
+            <label for="new-post-title">Title</label>
+            <input id="new-post-title" type="text" th:field="*{title}" placeholder="Title"/>
+        </div>
+
+        <div>
+            <label for="new-post-content">Content</label>
+            <input id="new-post-content" type="text" th:field="*{content}" placeholder="Content"/>
+            Select category:
+            <select th:field="*{category}">
+                <option th:each="category: ${categories}" th:text="${category.title}" th:value="${category.title}"></option>
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>

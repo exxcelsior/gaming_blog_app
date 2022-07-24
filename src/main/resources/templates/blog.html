@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device=width, initial-scale=1">
+    <title th:object="${user}" th:text="${user.username} +' Blog'"></title>
+
+</head>
+<body>
+<div class="container">
+
+    <div th:replace="/fragments/header :: header"/>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-4">
+            <h3 th:object="${user}" th:text="${user.username}"></h3>
+            <p>[description]</p>
+            <ul>Statistics:
+            <li th:object="${posts}" th:text="'Total posts: ' + ${posts.size()}"></li>
+            </ul>
+
+            <p></p>
+        </div>
+        <div class="col-8">
+            <div class="posts-container">
+                <div class="card" style="width:50rem;margin: auto;padding: 10px;" th:each="post : ${posts}">
+                    <div class="card-body">
+                        <h4 class="card-title"><a style="text-decoration: none;color: black;font-weight: bold" th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Title</a>
+                        </h4>
+                        <a style="text-decoration:none" class="card-subtitle mb-2 text-muted" th:href="@{'/blog/' + ${post.user.username}}" th:text="${post.user.username}">Username</a>
+                        <h7 class="card-subtitle mb-2 text-muted" style="font-style:italic" th:text="${#temporals.format(post.createDate, 'dd MMMM yy HH:mm', #locale.US)}">Posted time</h7>
+                        <br>
+                        <br>
+                        <p class="card-text" style="" th:text="${#strings.abbreviate(post.content,300)}">Post content</p>
+                        <a class="card-link" style="text-decoration: none" th:href="@{'/categories/' + ${post.category.id}}" th:text="${post.category.title} + ' | Genre: ' + ${post.category.genre.name}
+                     + ' | Released at ' + ${post.category.releaseDate} + ' | by ' + ${post.category.publisher.title}">Post category</a>
+                        <p class="card-text" style=""></p>
+                        <a class="card-link" th:href="@{'/comment/' + ${post.id}}" style="text-decoration:none"><h7 th:object="${commentCounts}" th:text="'&#128172 ' + ${commentCounts.get(post.id)}">Comments count</h7></a>
+                        <a class="card-link" th:href="@{'/like/' + ${post.id}}" style="text-decoration:none"><h7 th:object="${likeCounts}" th:text="'&#10084 ' + ${likeCounts.get(post.id)}">Likes count</h7></a>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>
